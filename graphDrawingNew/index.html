@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="FileSaver.js"></script>
+    <script src="FileReader.js"></script>
+    <meta charset="UTF-8">
+</head>
+<body>
+<canvas id="myCanvas" width="600" height="600" style="border:1px solid #000000;" tabindex="1">
+    Your browser does not support the HTML5 canvas tag.
+</canvas>
+<button onclick="download()" id="download">Download</button>
+<input id ="upload" type ="file" name="file-input" multiple = "">
+
+<form name="guidelines_form">
+  <label>Guidelines </label>
+  x:<br>
+  <input type="number" id="x_guide" value="0">
+  <br>
+  y:<br>
+  <input type="number" id="y_guide" value="0">
+  <br><br>
+  <input type="button" name="submit_guidelines" value="Set guidelines" onclick="setGuidelines()">
+</form> 
+
+</div>
+<script src="Graph.js"></script>
+<script>
+    myCanvas.addEventListener('mousemove', redraw);
+    myCanvas.addEventListener('click', clickCanvas);
+    function download(){
+    let graphString = graph.toString();
+
+    let blob = new Blob([graphString], {type: "text/plain;charset=utf-8"});
+    saveAs(blob, "rune.graph");
+    }
+
+    FileReaderJS.setupInput(document.getElementById('upload'),{ 
+    readAsDefault: "DataURL",
+  on: {
+    load: function(e, file) {
+      var img = new Image();
+      img.onload = function() {
+
+        backgroundImage = img;
+        if(backgroundImage.width > backgroundImage.height){
+      backgroundImage.height = backgroundImage.height*c.width/backgroundImage.width;
+      backgroundImage.width = c.width;
+    }else{
+      backgroundImage.width = backgroundImage.width*c.height/backgroundImage.height;
+      backgroundImage.height = c.height;
+    }
+
+      };
+      img.src = e.target.result;
+
+    }
+  }
+});
+
+</script>
+
+</body>
+</html> 
