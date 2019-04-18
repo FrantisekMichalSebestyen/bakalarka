@@ -55,7 +55,6 @@ var selectColor = "Green";
 var vertexSize = 10;
 var selectedVertex = null;
 var backgroundImage = null;
-var mode = "graphMode";
 var x_guide = 0;
 var y_guide = 0;
 const c = document.getElementById("myCanvas");
@@ -71,6 +70,21 @@ function getMousePos(event) {
     let mousePos = new Point(event.clientX - rect.left, event.clientY - rect.top);
     return mousePos;
 }
+function findGuideLinePosition(mousePos) {
+    if (x_guide > 0) {
+        let resolution_x = c.width / (x_guide + 1);
+        mousePos.x = mousePos.x / resolution_x;
+        mousePos.x = Math.round(mousePos.x);
+        mousePos.x = mousePos.x * resolution_x;
+    }
+    if (y_guide > 0) {
+        let resolution_y = c.width / (y_guide + 1);
+        mousePos.y = mousePos.y / resolution_y;
+        mousePos.y = Math.round(mousePos.y);
+        mousePos.y = mousePos.y * resolution_y;
+    }
+    return mousePos;
+}
 function checkInside(v1, v2) {
     if (v1.x > v2.x - vertexSize &&
         v1.x < v2.x + vertexSize &&
@@ -82,10 +96,15 @@ function checkInside(v1, v2) {
 function redraw(event) {
     ctx.beginPath();
     ctx.clearRect(0, 0, c.width, c.height);
-    const mousePos = getMousePos(event);
+    ctx.fillStyle = "black";
+    ctx.lineWidth = 1;
+    let mousePos = getMousePos(event);
     const message = "x: " + mousePos.x + " y: " + mousePos.y + " selected: " + selectedVertex;
     console.log(message);
-    console.log(x_guide + "       HA LOOOOOOOOOO");
+    ctx.strokeStyle = "black";
+    if (backgroundImage != null) {
+        ctx.drawImage(backgroundImage, c.width / 2 - backgroundImage.width / 2, c.height / 2 - backgroundImage.height / 2, backgroundImage.width, backgroundImage.height);
+    }
     for (let i = 0; i < x_guide; i++) {
         ctx.beginPath();
         ctx.moveTo(c.width / (x_guide + 1) * (i + 1), 0);
@@ -98,16 +117,13 @@ function redraw(event) {
         ctx.lineTo(c.width, c.height / (y_guide + 1) * (i + 1));
         ctx.stroke();
     }
-    if (backgroundImage != null) {
-        ctx.drawImage(backgroundImage, c.width / 2 - backgroundImage.width / 2, c.height / 2 - backgroundImage.height / 2, backgroundImage.width, backgroundImage.height);
-    }
+    ctx.lineWidth = 3;
     for (const [vertex, adjVertex] of graph.adjSet) {
         for (const adjVertex of graph.adjSet.get(vertex)) {
             ctx.beginPath();
-            ctx.strokeStyle = "yellow";
+            ctx.strokeStyle = "red";
             ctx.moveTo(vertex.x, vertex.y);
             ctx.lineTo(adjVertex.x, adjVertex.y);
-            ctx.lineWidth = 1;
             ctx.stroke();
         }
     }
@@ -124,9 +140,11 @@ function redraw(event) {
     ctx.fillText(message, 0, c.height);
 }
 function clickVertex(event) {
-    const mousePos = getMousePos(event);
+    let mousePos = getMousePos(event);
     let insideOfVertex = false;
     let nextVertex;
+    mousePos = findGuideLinePosition(mousePos);
+    console.log(mousePos.x + " " + mousePos.y);
     for (let vertex of graph.adjSet.keys()) {
         if (checkInside(vertex, mousePos)) {
             insideOfVertex = true;
@@ -200,4 +218,8 @@ function clickCanvas(event) {
         clickVertex(event);
     }
     redraw(event);
+}
+function createDelaunay() {
+}
+function compareDelaunay() {
 }

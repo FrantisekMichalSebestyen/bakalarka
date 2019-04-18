@@ -1,0 +1,14 @@
+{
+  "name": "delaunayguibasstolfi",
+  "version": "1.0.4",
+  "description": "Calculate Delaunay triangulation",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "František Michal Sebestýen",
+  "license": "ISC"
+}

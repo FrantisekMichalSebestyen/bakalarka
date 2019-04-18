@@ -62,12 +62,12 @@ class Graph {
   }
 }
 
+
 let graph = new Graph();
 var selectColor = "Green";
 var vertexSize = 10;
 var selectedVertex: null | Point = null;
 var backgroundImage: null | HTMLImageElement = null;
-var mode: string = "graphMode";
 var x_guide : number = 0;
 var y_guide : number = 0;
 
@@ -88,6 +88,24 @@ function getMousePos(event: MouseEvent): Point {
   return mousePos;
 }
 
+function findGuideLinePosition(mousePos: Point) : Point{
+  if(x_guide > 0){
+    let resolution_x : number = c.width/(x_guide+1);
+      mousePos.x = mousePos.x / resolution_x;
+      mousePos.x = Math.round(mousePos.x);
+      mousePos.x = mousePos.x * resolution_x;
+  }
+
+  if(y_guide > 0){
+    let resolution_y : number = c.width/(y_guide+1);
+    mousePos.y = mousePos.y / resolution_y;
+    mousePos.y = Math.round(mousePos.y);
+    mousePos.y = mousePos.y * resolution_y;
+  }
+
+  return mousePos;
+}
+
 function checkInside(v1: Point, v2: Point) {
   if (v1.x > v2.x - vertexSize &&
     v1.x < v2.x + vertexSize &&
@@ -100,10 +118,20 @@ function checkInside(v1: Point, v2: Point) {
 function redraw(event: MouseEvent) {
   ctx.beginPath();
   ctx.clearRect(0, 0, c.width, c.height);
-  const mousePos: Point = getMousePos(event);
+  ctx.fillStyle = "black";
+  ctx.lineWidth = 1;
+
+
+  let mousePos: Point = getMousePos(event);
   const message = "x: " + mousePos.x + " y: " + mousePos.y + " selected: " + selectedVertex;
   console.log(message);
-  console.log(x_guide + "       HA LOOOOOOOOOO");
+
+  ctx.strokeStyle = "black";
+
+  if (backgroundImage != null) {
+    ctx.drawImage(backgroundImage, c.width/2- backgroundImage.width/2, c.height /2 - backgroundImage.height/2, backgroundImage.width, backgroundImage.height);
+  }
+  
   for(let i = 0 ; i < x_guide; i++ ){
     ctx.beginPath();
     ctx.moveTo(c.width/(x_guide+1)*(i+1), 0);
@@ -118,17 +146,15 @@ function redraw(event: MouseEvent) {
     ctx.stroke();
   }
 
-  if (backgroundImage != null) {
-    ctx.drawImage(backgroundImage, c.width/2- backgroundImage.width/2, c.height /2 - backgroundImage.height/2, backgroundImage.width, backgroundImage.height);
-  }
+
+  ctx.lineWidth = 3;
 
   for (const [vertex, adjVertex] of graph.adjSet) {
     for (const adjVertex of graph.adjSet.get(vertex)) {
       ctx.beginPath();
-      ctx.strokeStyle = "yellow";
+      ctx.strokeStyle = "red";
       ctx.moveTo(vertex.x, vertex.y);
       ctx.lineTo(adjVertex.x, adjVertex.y);
-      ctx.lineWidth = 1;
       ctx.stroke();
     }
   }
@@ -154,10 +180,14 @@ function redraw(event: MouseEvent) {
   ctx.fillText(message, 0, c.height);
 }
 
+
+
 function clickVertex(event: MouseEvent) {
-  const mousePos = getMousePos(event);
+  let mousePos : Point = getMousePos(event);
   let insideOfVertex: Boolean = false;
   let nextVertex;
+  mousePos = findGuideLinePosition(mousePos);
+  console.log(mousePos.x + " " + mousePos.y);
   for (let vertex of graph.adjSet.keys()) {
     if (checkInside(vertex, mousePos)) {
       insideOfVertex = true;
@@ -232,3 +262,25 @@ function clickCanvas(event: MouseEvent) {
   redraw(event)
 }
 
+
+function createDelaunay(){/*
+  let arrVertex = new Array<Vertex>();
+  let graphDelaunay = new Graph();
+  for(let point of graph.adjSet.keys()){
+    arrVertex.push(new Vertex(point.x, point.y));
+    graphDelaunay.addVertex(new Vertex(point.x, point.y));
+  };
+
+  let arrTriangle = delaunay(arrVertex);
+   
+  for(let triangle of arrTriangle){
+    graphDelaunay.addEdge(triangle.a, triangle.b);
+    graphDelaunay.addEdge(triangle.b, triangle.c);
+    graphDelaunay.addEdge(triangle.a, triangle.c);
+  }
+  graph = graphDelaunay;*/
+}
+
+function compareDelaunay(){
+  
+}
