@@ -1,0 +1,19 @@
+{
+  "name": "graphDrawingNew",
+  "version": "1.0.4",
+  "description": "TODO Calculate Delaunay triangulation",
+  "dependencies": {
+    "delaunayguibasstolfi": "^1.0.10"
+  },
+  "devDependencies": {
+    "@babel/plugin-transform-modules-commonjs": "^7.4.3",
+    "@babel/preset-env": "^7.4.3"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "transpile": "babel",
+    "build": "babel src -d lib"
+  },
+  "author": "František Michal Sebestýen",
+  "license": "ISC"
+}

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="FileSaver.js"></script>
+    <script src="FileReader.js"></script>
+    <meta charset="UTF-8">
+    <title>Graph Drawing</title>
+</head>
+<body>
+<canvas id="myCanvas" width="500" height="500" style="border:1px solid #000000;" tabindex="1">
+    Your browser does not support the HTML5 canvas tag.
+</canvas>
+
+<button onclick="download()" id="download">Download</button>
+<button id="createDelaunay">Create Delaunay Triangulation</button>
+<button id="compareDelaunay">Compare to Delaunay Triangulation</button>
+<button id="submitGuideLines">Set guidelines</button>
+<button id="clearGraph">Delete graph</button>
+
+<input id ="upload" type ="file" name="file-input" multiple = "">
+
+<script src="graphBrowser.js"></script>
+
+<form name="guidelines_form">
+  <label>Guidelines </label>
+  x:<br>
+  <input type="number" id="x_guide" value="0">
+  <br>
+  y:<br>
+  <input type="number" id="y_guide" value="0">
+</form> 
+
+<script>
+    function download(){
+    let graphString = graph.toString();
+
+    let blob = new Blob([graphString], {type: "text/plain;charset=utf-8"});
+    saveAs(blob, "rune.graph");
+    }
+
+    FileReaderJS.setupInput(document.getElementById('upload'),{ 
+    readAsDefault: "DataURL",
+  on: {
+    load: function(e, file) {
+      var img = new Image();
+      img.onload = function() {
+
+        backgroundImage = img;
+        if(backgroundImage.width > backgroundImage.height){
+      backgroundImage.height = backgroundImage.height*c.width/backgroundImage.width;
+      backgroundImage.width = c.width;
+    }else{
+      backgroundImage.width = backgroundImage.width*c.height/backgroundImage.height;
+      backgroundImage.height = c.height;
+    }
+
+      };
+      img.src = e.target.result;
+
+    }
+  }
+});
+
+</script>
+
+</body>
+</html> 
